@@ -1,0 +1,32 @@
+services:
+  marzafood-web:
+    image: nginx:alpine
+    container_name: marzafood-web
+    restart: unless-stopped
+
+    # Serve your static site
+    volumes:
+      - ./site:/usr/share/nginx/html:ro
+
+    networks:
+      - proxy
+
+    labels:
+      - traefik.enable=true
+
+      # Router
+      - traefik.http.routers.marzafood.rule=Host(`${MARZAFOOD_DOMAIN}`)
+      - traefik.http.routers.marzafood.entrypoints=websecure
+      - traefik.http.routers.marzafood.tls=true
+      - traefik.http.routers.marzafood.tls.certresolver=cfresolver
+
+      # Service -> container port 80
+      - traefik.http.services.marzafood.loadbalancer.server.port=80
+
+      # Optional: compression middleware (safe)
+      - traefik.http.middlewares.marzafood-compress.compress=true
+      - traefik.http.routers.marzafood.middlewares=marzafood-compress
+
+networks:
+  proxy:
+    external: true
