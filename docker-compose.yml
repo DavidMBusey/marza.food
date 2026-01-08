@@ -12,8 +12,8 @@ services:
       - traefik.http.routers.marzafood.rule=Host(`${MARZAFOOD_DOMAIN}`)
       - traefik.http.routers.marzafood.entrypoints=websecure
       - traefik.http.routers.marzafood.tls=true
-      - traefik.http.routers.marzafood.tls.certresolver=cfresolver
       - traefik.http.services.marzafood.loadbalancer.server.port=80
+      - traefik.http.routers.marzafood.tls.certresolver=httpresolver
 
 networks:
   proxy:
